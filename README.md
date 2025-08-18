@@ -1,5 +1,16 @@
 # UE5 Documentation Scraper
 
+```
+  ██╗   ██╗███████╗███████╗    ██████╗  ██████╗  ██████╗███████╗
+  ██║   ██║██╔════╝██╔════╝    ██╔══██╗██╔═══██╗██╔════╝██╔════╝
+  ██║   ██║█████╗  ███████╗    ██║  ██║██║   ██║██║     ███████╗
+  ██║   ██║██╔══╝  ╚════██║    ██║  ██║██║   ██║██║     ╚════██║
+  ╚██████╔╝███████╗███████║    ██████╔╝╚██████╔╝╚██████╗███████║
+   ╚═════╝ ╚══════╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚══════╝
+
+                         DOCUMENTATION SCRAPER
+```
+
 A Python tool to scrape all documentation from the Unreal Engine 5 website and save individual pages as PDFs in a directory structure mirroring the sitemap.
 
 ## Features
@@ -13,25 +24,43 @@ A Python tool to scrape all documentation from the Unreal Engine 5 website and s
 
 ## Installation
 
+### Windows 11 Users
+For Windows 11, use the dedicated setup files:
+1. **Easy setup**: Double-click `setup_windows.bat`
+2. **Detailed guide**: See `README_Windows.md`
+
+### Linux/Mac Users
 1. Run the setup script:
    ```bash
+   # For Arch Linux
+   ./setup_arch.sh
+   
+   # For other Linux distributions
    python setup.py
    ```
 
 2. Or install manually:
    ```bash
-   # Install system dependencies (Linux)
-   sudo apt-get update
-   sudo apt-get install -y wkhtmltopdf xvfb
-
+   # Create virtual environment
+   python -m venv venv
+   source venv/bin/activate
+   
    # Install Python dependencies
    pip install -r requirements.txt
    ```
 
 ## Usage
 
-Run the scraper:
+### Windows 11
+Double-click `run_scraper.bat` or:
+```cmd
+venv\Scripts\activate.bat
+python ue5_docs_scraper.py
+```
+
+### Linux/Mac
 ```bash
+source venv/bin/activate
 python ue5_docs_scraper.py
 ```
 

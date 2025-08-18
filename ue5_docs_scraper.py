@@ -22,6 +22,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from fake_useragent import UserAgent
 import xml.etree.ElementTree as ET
+import re
+import html
+import unicodedata
 
 
 class UE5DocsScraper:
@@ -62,6 +65,63 @@ class UE5DocsScraper:
         
         self.driver = webdriver.Firefox(options=firefox_options)
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+    def clean_filename(self, name, max_length=50):
+        """Clean a string to be safe for use as a filename"""
+        if not name or not name.strip():
+            return "unnamed"
+        
+        # Normalize unicode and decode HTML entities
+        name = unicodedata.normalize('NFKD', name)
+        name = html.unescape(name)
+        
+        # Replace problematic characters
+        forbidden_chars = '<>:"|?*\\/\r\n\t'
+        for char in forbidden_chars:
+            name = name.replace(char, '_')
+        
+        # Remove control characters (ASCII 0-31)
+        name = ''.join(char for char in name if ord(char) >= 32)
+        
+        # Collapse multiple spaces/underscores
+        name = re.sub(r'[_\s]+', '_', name)
+        
+        # Remove leading/trailing dots, spaces, underscores
+        name = name.strip('._\t\n\r ')
+        name = name.strip('._')
+        
+        # Handle Windows reserved names
+        windows_reserved = {
+            'CON', 'PRN', 'AUX', 'NUL',
+            'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+            'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'
+        }
+        
+        if name.upper() in windows_reserved:
+            name = f"_{name}"
+        
+        # Limit length
+        if len(name) > max_length:
+            name = name[:max_length]
+        
+        # Ensure we don't end with a dot (Windows issue)
+        name = name.rstrip('.')
+        
+        # Final fallback
+        return name if name else "unnamed"
+
+    def clean_directory_name(self, name):
+        """Clean a string to be safe for use as a directory name"""
+        if not name or not name.strip():
+            return "unnamed_dir"
+        
+        # Apply same cleaning as filename but allow longer names
+        clean_name = self.clean_filename(name, max_length=100)
+        
+        # Remove trailing dots (Windows doesn't allow directories ending with dots)
+        clean_name = clean_name.rstrip('.')
+        
+        return clean_name or "unnamed_dir"
 
     def get_sitemap_urls(self):
         """Extract URLs from sitemap or discover through navigation"""
@@ -126,33 +186,84 @@ class UE5DocsScraper:
             return []
 
     def create_directory_structure(self, url):
-        """Create directory structure based on URL path"""
-        parsed_url = urlparse(url)
-        path_parts = [part for part in parsed_url.path.split('/') if part]
-        
-        # Remove the filename part if it exists
-        if path_parts and '.' in path_parts[-1]:
-            path_parts = path_parts[:-1]
+        """Create directory structure based on URL path with enhanced safety"""
+        try:
+            parsed_url = urlparse(url)
+            path_parts = [part for part in parsed_url.path.split('/') if part]
             
-        dir_path = self.output_dir
-        for part in path_parts:
-            # Clean up the directory name
-            clean_part = unquote(part).replace(' ', '_').replace('?', '').replace('&', '_')
-            dir_path = dir_path / clean_part
+            # Remove filename if it exists (has extension)
+            if path_parts and '.' in path_parts[-1]:
+                path_parts = path_parts[:-1]
             
-        dir_path.mkdir(parents=True, exist_ok=True)
-        return dir_path
+            # Start from base directory
+            current_path = self.output_dir
+            
+            for part in path_parts:
+                # URL decode the part
+                decoded_part = unquote(part)
+                
+                # Clean the directory name
+                clean_part = self.clean_directory_name(decoded_part)
+                
+                # Prevent path traversal
+                if '..' in clean_part or clean_part.startswith('.'):
+                    clean_part = clean_part.replace('..', '_').lstrip('.')
+                
+                # Build path safely
+                current_path = current_path / clean_part
+                
+                # Check for extremely long paths (Windows has 260 char limit)
+                if len(str(current_path)) > 200:  # Leave some buffer
+                    # Truncate the last part and break
+                    truncated = clean_part[:50]
+                    current_path = current_path.parent / truncated
+                    break
+            
+            # Create the directory structure
+            current_path.mkdir(parents=True, exist_ok=True)
+            return current_path
+            
+        except Exception as e:
+            self.logger.warning(f"Error creating directory for {url}: {e}")
+            # Fallback to a safe default
+            safe_path = self.output_dir / "unknown_structure"
+            safe_path.mkdir(parents=True, exist_ok=True)
+            return safe_path
 
-    def get_page_title(self, soup):
-        """Extract page title for filename"""
-        title_elem = soup.find('title') or soup.find('h1')
-        if title_elem:
-            title = title_elem.get_text().strip()
-            # Clean title for filename
-            title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).strip()
-            title = title.replace(' ', '_')[:50]  # Limit length
-            return title
-        return "page"
+    def get_page_title(self, soup, url=None):
+        """Extract page title for filename with enhanced safety"""
+        filename = "page"  # Default fallback
+        
+        try:
+            # Try to extract title from various sources
+            title_elem = (
+                soup.find('title') or 
+                soup.find('h1') or 
+                soup.find('h2') or
+                soup.find('meta', {'property': 'og:title'})
+            )
+            
+            if title_elem:
+                if title_elem.name == 'meta':
+                    title = title_elem.get('content', '')
+                else:
+                    title = title_elem.get_text()
+                
+                if title and title.strip():
+                    filename = self.clean_filename(title.strip(), max_length=50)
+        
+        except Exception:
+            # If anything fails, use URL-based name
+            if url:
+                try:
+                    parsed_url = urlparse(url)
+                    path_parts = [part for part in parsed_url.path.split('/') if part]
+                    if path_parts:
+                        filename = self.clean_filename(path_parts[-1], max_length=50)
+                except Exception:
+                    pass
+        
+        return filename
 
     def scrape_page_content(self, url):
         """Scrape content from a single page"""
@@ -187,9 +298,22 @@ class UE5DocsScraper:
             return None, None
 
     def save_as_pdf(self, html_content, output_path):
-        """Convert HTML content to PDF using WeasyPrint"""
+        """Convert HTML content to PDF using WeasyPrint with enhanced safety"""
         try:
             import weasyprint
+            import shutil
+            
+            # Ensure parent directory exists
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Check available disk space (rough estimate)
+            try:
+                free_space = shutil.disk_usage(output_path.parent).free
+                if free_space < 50 * 1024 * 1024:  # Less than 50MB
+                    raise OSError("Insufficient disk space")
+            except Exception:
+                # If we can't check disk space, continue anyway
+                pass
             
             # Create a full HTML document
             full_html = f"""
@@ -214,10 +338,23 @@ class UE5DocsScraper:
             </html>
             """
             
-            # Use WeasyPrint to create PDF
-            html_doc = weasyprint.HTML(string=full_html)
-            html_doc.write_pdf(str(output_path))
-            return True
+            # Write to temporary file first, then rename (atomic operation)
+            temp_path = output_path.with_suffix(output_path.suffix + '.tmp')
+            
+            try:
+                # Use WeasyPrint to create PDF
+                html_doc = weasyprint.HTML(string=full_html)
+                html_doc.write_pdf(str(temp_path))
+                
+                # If successful, rename to final filename
+                temp_path.rename(output_path)
+                return True
+                
+            except Exception as e:
+                # Clean up temp file if it exists
+                if temp_path.exists():
+                    temp_path.unlink()
+                raise e
             
         except Exception as e:
             self.logger.error(f"Error creating PDF {output_path}: {e}")
@@ -255,8 +392,17 @@ class UE5DocsScraper:
                 dir_path = self.create_directory_structure(url)
                 
                 # Generate filename
-                title = self.get_page_title(soup)
+                title = self.get_page_title(soup, url)
                 filename = f"{title}.pdf"
+                
+                # Handle duplicate filenames
+                counter = 1
+                original_filename = filename
+                while (dir_path / filename).exists():
+                    name_part = original_filename[:-4]  # Remove .pdf
+                    filename = f"{name_part}_{counter}.pdf"
+                    counter += 1
+                
                 output_path = dir_path / filename
                 
                 # Save as PDF
