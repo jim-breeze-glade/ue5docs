@@ -55,8 +55,8 @@ python -m pip install --upgrade pip
 
 REM Install dependencies
 echo.
-echo [5/6] Installing Python dependencies...
-pip install -r requirements.txt
+echo [5/6] Installing Python dependencies for Windows...
+pip install -r requirements-windows.txt
 if %errorlevel% neq 0 (
     echo ERROR: Failed to install dependencies
     echo Please check your internet connection and try again

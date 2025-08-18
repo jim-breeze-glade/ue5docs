@@ -12,6 +12,7 @@ import asyncio
 import aiohttp
 import time
 import logging
+import platform
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, unquote
 from bs4 import BeautifulSoup
@@ -298,7 +299,118 @@ class UE5DocsScraper:
             return None, None
 
     def save_as_pdf(self, html_content, output_path):
-        """Convert HTML content to PDF using WeasyPrint with enhanced safety"""
+        """Convert HTML content to PDF with cross-platform support"""
+        # Try Windows-friendly method first on Windows
+        if platform.system() == "Windows":
+            return self._save_as_pdf_windows(html_content, output_path)
+        else:
+            return self._save_as_pdf_unix(html_content, output_path)
+    
+    def _save_as_pdf_windows(self, html_content, output_path):
+        """Windows-compatible PDF generation using Selenium and browser printing"""
+        try:
+            import shutil
+            
+            # Ensure parent directory exists
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Check available disk space (rough estimate)
+            try:
+                free_space = shutil.disk_usage(output_path.parent).free
+                if free_space < 50 * 1024 * 1024:  # Less than 50MB
+                    raise OSError("Insufficient disk space")
+            except Exception:
+                # If we can't check disk space, continue anyway
+                pass
+            
+            # Create a full HTML document
+            full_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }}
+                    img {{ max-width: 100%; height: auto; }}
+                    pre {{ background: #f5f5f5; padding: 10px; border-radius: 5px; overflow: auto; }}
+                    code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 3px; }}
+                    table {{ border-collapse: collapse; width: 100%; }}
+                    th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                    th {{ background-color: #f2f2f2; }}
+                    h1, h2, h3 {{ color: #333; }}
+                    @media print {{
+                        body {{ margin: 0; }}
+                        * {{ -webkit-print-color-adjust: exact; }}
+                    }}
+                </style>
+            </head>
+            <body>
+                {html_content}
+            </body>
+            </html>
+            """
+            
+            # Write HTML to temporary file
+            temp_html = output_path.with_suffix('.html')
+            temp_path = output_path.with_suffix(output_path.suffix + '.tmp')
+            
+            try:
+                # Write HTML file
+                with open(temp_html, 'w', encoding='utf-8') as f:
+                    f.write(full_html)
+                
+                # Use Selenium to print to PDF (works with Firefox on Windows)
+                from selenium.webdriver.common.print_page_options import PrintOptions
+                
+                # Configure print options
+                print_options = PrintOptions()
+                print_options.page_ranges = ['1-']
+                print_options.page_width = 8.27
+                print_options.page_height = 11.69
+                print_options.margin_top = 0.39
+                print_options.margin_bottom = 0.39
+                print_options.margin_left = 0.39
+                print_options.margin_right = 0.39
+                
+                # Navigate to the HTML file and print to PDF
+                self.driver.get(f"file:///{temp_html.absolute().as_posix()}")
+                
+                # Wait for page to load
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.TAG_NAME, "body"))
+                )
+                
+                # Print to PDF
+                pdf_data = self.driver.print_page(print_options)
+                
+                # Save PDF data to file
+                import base64
+                with open(temp_path, 'wb') as f:
+                    f.write(base64.b64decode(pdf_data))
+                
+                # If successful, rename to final filename
+                temp_path.rename(output_path)
+                
+                # Clean up temp HTML file
+                temp_html.unlink()
+                
+                return True
+                
+            except Exception as e:
+                # Clean up temp files if they exist
+                if temp_path.exists():
+                    temp_path.unlink()
+                if temp_html.exists():
+                    temp_html.unlink()
+                raise e
+            
+        except Exception as e:
+            self.logger.error(f"Error creating PDF on Windows {output_path}: {e}")
+            # Fall back to saving as HTML
+            return self._save_as_html_fallback(html_content, output_path)
+    
+    def _save_as_pdf_unix(self, html_content, output_path):
+        """Unix/Linux PDF generation using WeasyPrint"""
         try:
             import weasyprint
             import shutil
@@ -357,7 +469,46 @@ class UE5DocsScraper:
                 raise e
             
         except Exception as e:
-            self.logger.error(f"Error creating PDF {output_path}: {e}")
+            self.logger.error(f"Error creating PDF on Unix {output_path}: {e}")
+            # Fall back to saving as HTML
+            return self._save_as_html_fallback(html_content, output_path)
+    
+    def _save_as_html_fallback(self, html_content, output_path):
+        """Fallback method to save as HTML if PDF generation fails"""
+        try:
+            html_path = output_path.with_suffix('.html')
+            
+            full_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>UE5 Documentation</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }}
+                    img {{ max-width: 100%; height: auto; }}
+                    pre {{ background: #f5f5f5; padding: 10px; border-radius: 5px; overflow: auto; }}
+                    code {{ background: #f5f5f5; padding: 2px 4px; border-radius: 3px; }}
+                    table {{ border-collapse: collapse; width: 100%; }}
+                    th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                    th {{ background-color: #f2f2f2; }}
+                    h1, h2, h3 {{ color: #333; }}
+                </style>
+            </head>
+            <body>
+                {html_content}
+            </body>
+            </html>
+            """
+            
+            with open(html_path, 'w', encoding='utf-8') as f:
+                f.write(full_html)
+            
+            self.logger.info(f"Saved as HTML fallback: {html_path}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error saving HTML fallback {output_path}: {e}")
             return False
 
     def scrape_all_docs(self):
