@@ -1,0 +1,140 @@
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:149 | ================================================================================
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:150 | UE5 Documentation Scraper - Enhanced Logging Started
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:151 | ================================================================================
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System platform: Linux-6.16.1-arch1-1-x86_64-with-glibc2.42
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System system: Linux
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System release: 6.16.1-arch1-1
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System version: #1 SMP PREEMPT_DYNAMIC Fri, 15 Aug 2025 16:04:43 +0000
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System machine: x86_64
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System processor: 
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System python_version: 3.13.7
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System python_implementation: CPython
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System hostname: jim-katana15b13vfk
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System total_memory_gb: 31.04
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System available_memory_gb: 28.98
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System memory_percent_used: 6.6
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System cpu_count: 16
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System cpu_count_physical: 10
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System cpu_percent: 3.3
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System disk_total_gb: 474.94
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System disk_free_gb: 156.25
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:154 | System disk_percent_used: 67.0
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:156 | ================================================================================
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:354 | STARTUP CONFIGURATION:
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:356 |   base_url: https://docs.unrealengine.com
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:356 |   output_dir: ue5_docs
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:356 |   platform: Linux
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:356 |   python_version: 3.13.7
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:356 |   working_directory: /home/jim/development/ue5docs
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:317 | Starting sitemap retrieval from: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:334 | SUCCESS: Successfully parsed sitemap with 1,247 URLs | URL: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:350 | PERFORMANCE: sitemap_parsing completed in 2.30s | Context: {'url_count': 1247} | Memory: 17.98MB | CPU: 0.0%
+2025-08-18 21:33:57 | WARNING  | UE5DocsScraper:306 | Access forbidden (403) when accessing sitemap | URL: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:33:57 | INFO     | UE5DocsScraper:317 | Falling back to URL discovery through navigation
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:289 | Error retrieving or parsing sitemap | URL: https://docs.unrealengine.com/sitemap.xml | Operation: get_sitemap_urls | Exception: ConnectionError: Failed to establish a new connection: [Errno 111] Connection refused | Category: network
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 62, in demonstrate_logging
+    raise ConnectionError("Failed to establish a new connection: [Errno 111] Connection refused")
+ConnectionError: Failed to establish a new connection: [Errno 111] Connection refused
+
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:289 | Timeout waiting for page body to load | URL: https://docs.unrealengine.com/5.3/en-US/getting-started/ | Operation: scrape_page_content | Exception: Exception: WebDriver timeout: element not found after 10 seconds | Category: selenium
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 73, in demonstrate_logging
+    raise Exception("WebDriver timeout: element not found after 10 seconds")
+Exception: WebDriver timeout: element not found after 10 seconds
+
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:289 | Permission denied when creating directory structure | URL: https://docs.unrealengine.com/5.3/en-US/blueprints/ | Operation: create_directory_structure | Exception: PermissionError: Permission denied when creating directory | Category: filesystem
+2025-08-18 21:33:57 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 84, in demonstrate_logging
+    raise PermissionError("Permission denied when creating directory")
+PermissionError: Permission denied when creating directory
+
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:149 | ================================================================================
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:150 | UE5 Documentation Scraper - Enhanced Logging Started
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:151 | ================================================================================
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System platform: Linux-6.16.1-arch1-1-x86_64-with-glibc2.42
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System system: Linux
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System release: 6.16.1-arch1-1
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System version: #1 SMP PREEMPT_DYNAMIC Fri, 15 Aug 2025 16:04:43 +0000
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System machine: x86_64
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System processor: 
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System python_version: 3.13.7
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System python_implementation: CPython
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System hostname: jim-katana15b13vfk
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System total_memory_gb: 31.04
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System available_memory_gb: 28.98
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System memory_percent_used: 6.6
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System cpu_count: 16
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System cpu_count_physical: 10
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System cpu_percent: 3.0
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System disk_total_gb: 474.94
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System disk_free_gb: 156.25
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:154 | System disk_percent_used: 67.0
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:156 | ================================================================================
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:354 | STARTUP CONFIGURATION:
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:356 |   base_url: https://docs.unrealengine.com
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:356 |   output_dir: ue5_docs
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:356 |   platform: Linux
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:356 |   python_version: 3.13.7
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:356 |   working_directory: /home/jim/development/ue5docs
+2025-08-18 21:34:36 | INFO     | UE5DocsScraper:317 | Starting sitemap retrieval from: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:334 | SUCCESS: Successfully parsed sitemap with 1,247 URLs | URL: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:350 | PERFORMANCE: sitemap_parsing completed in 2.30s | Context: {'url_count': 1247} | Memory: 18.0MB | CPU: 0.0%
+2025-08-18 21:34:37 | WARNING  | UE5DocsScraper:306 | Access forbidden (403) when accessing sitemap | URL: https://docs.unrealengine.com/sitemap.xml
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:317 | Falling back to URL discovery through navigation
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:289 | Error retrieving or parsing sitemap | URL: https://docs.unrealengine.com/sitemap.xml | Operation: get_sitemap_urls | Exception: ConnectionError: Failed to establish a new connection: [Errno 111] Connection refused | Category: network
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 62, in demonstrate_logging
+    raise ConnectionError("Failed to establish a new connection: [Errno 111] Connection refused")
+ConnectionError: Failed to establish a new connection: [Errno 111] Connection refused
+
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:289 | Timeout waiting for page body to load | URL: https://docs.unrealengine.com/5.3/en-US/getting-started/ | Operation: scrape_page_content | Exception: Exception: WebDriver timeout: element not found after 10 seconds | Category: selenium
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 73, in demonstrate_logging
+    raise Exception("WebDriver timeout: element not found after 10 seconds")
+Exception: WebDriver timeout: element not found after 10 seconds
+
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:289 | Permission denied when creating directory structure | URL: https://docs.unrealengine.com/5.3/en-US/blueprints/ | Operation: create_directory_structure | Exception: PermissionError: Permission denied when creating directory | Category: filesystem
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 84, in demonstrate_logging
+    raise PermissionError("Permission denied when creating directory")
+PermissionError: Permission denied when creating directory
+
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:334 | SUCCESS: Unix PDF generation completed successfully | File: /home/user/ue5_docs/5.3/en-US/blueprints/Getting_Started.pdf | Size: 245760 bytes
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:350 | PERFORMANCE: pdf_generation completed in 3.20s | Context: {'method': 'weasyprint'} | Memory: 18.41MB | CPU: 0.0%
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:289 | WeasyPrint not available for Unix PDF generation | Operation: _save_as_pdf_unix | Exception: ImportError: No module named 'weasyprint' | Category: pdf
+2025-08-18 21:34:37 | ERROR    | UE5DocsScraper:293 | Traceback:
+Traceback (most recent call last):
+  File "/home/jim/development/ue5docs/demo_logging.py", line 104, in demonstrate_logging
+    raise ImportError("No module named 'weasyprint'")
+ImportError: No module named 'weasyprint'
+
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:317 | Attempting HTML fallback after Unix PDF failure
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:334 | SUCCESS: HTML fallback generation completed successfully | File: /home/user/ue5_docs/5.3/en-US/blueprints/Getting_Started.html | Size: 89432 bytes
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:350 | PERFORMANCE: html_fallback completed in 0.80s | Context: {'content_length': 82540, 'fallback_reason': 'PDF generation failed'} | Memory: 18.41MB | CPU: 0.0%
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:317 | Processing URL 1/3: https://docs.unrealengine.com/5.3/en-US/example-page-1/
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:334 | SUCCESS: Successfully processed URL 1/3 | URL: https://docs.unrealengine.com/5.3/en-US/example-page-1/ | File: /home/user/ue5_docs/5.3/en-US/example-page-1.pdf
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:350 | PERFORMANCE: url_processing_1 completed in 4.60s | Context: {'title': 'Example Page 1', 'directory': '/home/user/ue5_docs/5.3/en-US/'} | Memory: 18.41MB | CPU: 0.0%
+2025-08-18 21:34:37 | INFO     | UE5DocsScraper:317 | Processing URL 2/3: https://docs.unrealengine.com/5.3/en-US/example-page-2/
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:334 | SUCCESS: Successfully processed URL 2/3 | URL: https://docs.unrealengine.com/5.3/en-US/example-page-2/ | File: /home/user/ue5_docs/5.3/en-US/example-page-2.pdf
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:350 | PERFORMANCE: url_processing_2 completed in 5.10s | Context: {'title': 'Example Page 2', 'directory': '/home/user/ue5_docs/5.3/en-US/'} | Memory: 18.41MB | CPU: 0.0%
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:317 | Processing URL 3/3: https://docs.unrealengine.com/5.3/en-US/example-page-3/
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:334 | SUCCESS: Successfully processed URL 3/3 | URL: https://docs.unrealengine.com/5.3/en-US/example-page-3/ | File: /home/user/ue5_docs/5.3/en-US/example-page-3.pdf
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:350 | PERFORMANCE: url_processing_3 completed in 5.60s | Context: {'title': 'Example Page 3', 'directory': '/home/user/ue5_docs/5.3/en-US/'} | Memory: 18.41MB | CPU: 0.0%
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:366 | ================================================================================
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:367 | SCRAPING COMPLETION SUMMARY
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:368 | ================================================================================
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:369 | Total URLs processed: 3
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:370 | Successful: 3
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:371 | Failed: 0
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:372 | Success rate: 100.0%
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:373 | Total duration: 18.70 seconds
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:374 | Average time per URL: 6.23s
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:378 | Final memory usage: 18.41MB
+2025-08-18 21:34:38 | INFO     | UE5DocsScraper:379 | ================================================================================

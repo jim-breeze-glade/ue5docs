@@ -24,14 +24,18 @@ A comprehensive tool to scrape all Unreal Engine 5 documentation and save it as 
 
 ### Required Software
 - **Windows 11** (or Windows 10)
-- **Python 3.8+** ([Download here](https://www.python.org/downloads/))
-- **Mozilla Firefox** ([Download here](https://www.mozilla.org/firefox/))
+- **Python 3.8+** ([Download here](https://www.python.org/downloads/)) - Python 3.13+ recommended
+- **Mozilla Firefox** ([Download here](https://www.mozilla.org/firefox/)) - Primary browser
+- **Chrome/Edge** (Optional) - Alternative browser support
 - **Internet connection**
+- **2-4GB free disk space** for documentation storage
 
 ### Important Notes
 - ⚠️ **Install Python with "Add Python to PATH" checked**
-- ⚠️ **Firefox is required** - Chrome/Edge won't work
-- ⚠️ **Administrator privileges** may be needed for setup
+- ⚠️ **Firefox is recommended** - Chrome/Edge also supported with automatic driver setup
+- ⚠️ **Administrator privileges** required for setup scripts
+- ⚠️ **Enhanced logging** provides detailed operation monitoring
+- ⚠️ **Automated scripts** handle most setup and execution tasks
 
 ## 🛠️ Manual Setup Instructions
 
@@ -84,14 +88,23 @@ You should see something like `Python 3.11.x`
    ```
 
 ### Step 5: Test the Installation
+**Automated Testing**:
 ```cmd
-python test_setup.py
+test_windows.bat
+```
+
+**Manual Testing**:
+```cmd
+python test_enhanced_logging.py
+python demo_logging.py
 ```
 
 You should see:
 - ✓ All Python modules imported successfully
-- ✓ Firefox driver setup successful  
+- ✓ Enhanced logging system initialized
+- ✓ Browser drivers setup successful (Firefox/Chrome)
 - ✓ PDF generation test successful
+- ✓ Cross-platform compatibility verified
 - 🎉 All tests passed!
 
 ## 🎯 Running the Scraper
@@ -114,17 +127,24 @@ Double-click `run_scraper.bat`
 
 The scraper creates this structure:
 ```
-ue5_docs/
-├── 5.3/
-│   └── en-US/
-│       ├── getting-started/
-│       │   ├── Installation_Guide.pdf
-│       │   └── Quick_Start.pdf
-│       ├── programming/
-│       │   ├── Blueprints/
-│       │   └── C++/
-│       └── ...
-└── scraper.log
+project_root/
+├── ue5_docs/                    # Generated documentation
+│   └── 5.3/
+│       └── en-US/
+│           ├── getting-started/
+│           │   ├── Installation_Guide.pdf
+│           │   └── Quick_Start.pdf
+│           ├── programming/
+│           │   ├── Blueprints/
+│           │   └── C++/
+│           └── ...
+├── log.txt                      # Enhanced logging output
+├── scraper.log                  # Legacy log file
+├── setup.log                    # Setup operation logs
+├── test_results.log             # Test execution logs
+├── SCRIPTS_README.md            # Script documentation
+├── LOGGING_DOCUMENTATION.md     # Logging system docs
+└── enhanced_logger.py           # Logging system core
 ```
 
 ## ⚙️ Configuration
@@ -145,9 +165,12 @@ scraper = UE5DocsScraper(base_url="https://docs.unrealengine.com/5.4/en-US/")
 - Reinstall Python with "Add Python to PATH" checked
 - Or manually add Python to your PATH environment variable
 
-### "Firefox driver setup failed"
-- Install Firefox from [mozilla.org/firefox](https://www.mozilla.org/firefox/)
+### "Browser driver setup failed"
+- **Firefox**: Install from [mozilla.org/firefox](https://www.mozilla.org/firefox/)
+- **Chrome**: Install from [google.com/chrome](https://www.google.com/chrome/)
+- **Edge**: Usually pre-installed on Windows
 - Restart Command Prompt after installation
+- Check `setup.log` for detailed driver setup information
 
 ### "Permission denied" errors
 - Run Command Prompt as Administrator
@@ -158,20 +181,28 @@ scraper = UE5DocsScraper(base_url="https://docs.unrealengine.com/5.4/en-US/")
 - Reinstall dependencies: `pip install -r requirements.txt`
 
 ### PDF generation fails
-- Check `scraper.log` for detailed error messages
+- Check `log.txt` for comprehensive error details and categorization
+- Review `scraper.log` for legacy error information
 - Ensure you have write permissions to the output directory
+- Monitor system resources (memory, disk space) in enhanced logs
+- Run diagnostic tests: `python test_enhanced_logging.py`
 
 ### Scraper gets blocked/403 errors
-- The scraper includes anti-bot measures, but some pages may still block requests
-- Try running at different times or with longer delays
+- The scraper includes enhanced anti-bot measures with intelligent delays
+- **Enhanced logging** tracks network errors and categorizes blocking attempts
+- Try running at different times or increase delays in configuration
+- Check `log.txt` for detailed network error analysis
+- Review system resource usage - high CPU/memory may trigger detection
 - Check Epic Games' terms of service for scraping policies
 
 ## 📊 Performance Tips
 
-- **Disk Space**: UE5 docs are large - ensure you have several GB free
-- **Time**: Complete scraping may take several hours
-- **Memory**: Close other applications if you experience slowdowns
-- **Network**: Stable internet connection recommended
+- **Disk Space**: UE5 docs are large - ensure you have 2-4GB free (monitored in logs)
+- **Time**: Complete scraping may take several hours (duration tracked in logs)
+- **Memory**: Enhanced logging monitors RAM usage - close other applications if warned
+- **CPU**: System monitors CPU utilization and adjusts operation accordingly
+- **Network**: Stable internet connection recommended (network errors categorized in logs)
+- **Monitoring**: Check `log.txt` for real-time performance metrics during operation
 
 ## 🚨 Important Warnings
 
@@ -184,10 +215,14 @@ scraper = UE5DocsScraper(base_url="https://docs.unrealengine.com/5.4/en-US/")
 
 If you encounter issues:
 
-1. **Check the logs**: Look at `scraper.log` for detailed error messages
-2. **Test setup**: Run `python test_setup.py` to verify installation
-3. **Update dependencies**: Try `pip install --upgrade -r requirements.txt`
-4. **Restart**: Sometimes a simple restart fixes driver issues
+1. **Check enhanced logs**: Review `log.txt` for comprehensive error analysis and categorization
+2. **Test setup**: Run `test_windows.bat` for complete system validation
+3. **Review legacy logs**: Check `scraper.log` for historical error information
+4. **Update dependencies**: Try `pip install --upgrade -r requirements.txt`
+5. **System diagnostics**: Run `python test_enhanced_logging.py` for logging system tests
+6. **Script documentation**: Consult `SCRIPTS_README.md` for detailed troubleshooting
+7. **Performance monitoring**: Monitor system resources in real-time via enhanced logs
+8. **Restart**: Sometimes a simple restart fixes driver and system issues
 
 ## 📜 Legal Notice
 

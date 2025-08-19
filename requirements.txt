@@ -5,3 +5,4 @@ lxml
 weasyprint
 aiohttp
 fake-useragent
+psutil
