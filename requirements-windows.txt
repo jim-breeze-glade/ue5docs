@@ -1,6 +1,26 @@
+# Core dependencies for Windows
 requests>=2.28.0
 beautifulsoup4>=4.11.0
 selenium>=4.0.0
 lxml>=4.6.0
 aiohttp>=3.8.0
 fake-useragent>=1.1.0
+psutil>=5.8.0
+
+# Enhanced HTTP handling
+urllib3>=1.26.0
+chardet>=4.0.0
+
+# Windows-specific enhancements
+# Note: WeasyPrint is not included for Windows due to GTK+ dependency issues
+# The scraper will automatically use Selenium-based PDF generation on Windows
+
+# Optional: For advanced users who want to try WeasyPrint on Windows
+# weasyprint>=56.0
+# Note: Requires manual GTK+ installation from:
+# https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer
+
+# PDF fallback dependencies
+# These provide alternative PDF generation methods if needed
+# reportlab>=3.6.0  # Alternative PDF library
+# pdfkit>=1.0.0     # Requires wkhtmltopdf installation

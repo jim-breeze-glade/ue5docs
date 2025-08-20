@@ -50,3 +50,6 @@ Thumbs.db
 
 # Browser drivers
 geckodriver.log
+
+# Debug files
+.debug/
